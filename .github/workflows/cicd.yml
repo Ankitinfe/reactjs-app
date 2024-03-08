@@ -1,9 +1,9 @@
-name: CICD
+name: cicd
 
 on:
   push:
     branches:
-      - Master
+      - master
 
 jobs:
   build:
@@ -16,16 +16,19 @@ jobs:
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Build Docker Image
         run: docker build -t ankit974/reactjs-app .
-      - name: Publish image to docker hub
+      - name: Publish image to Docker Hub
         run: docker push ankit974/reactjs-app:latest
 
   deploy:
     needs: build
-    runs-on: aws-ec2
+    runs-on: ubuntu-latest
     steps:
-      - name: Pull image from docker hub
+      - name: Pull image from Docker Hub
         run: docker pull ankit974/reactjs-app:latest
-      - name: Delete Old Container
-        run: docker rm -f reactContainer
-      - name: Run docker container
-        run: docker run -d -p 3000:80 --name reactContainer ankit974/reactjs-app
+      - name: Check if Container Exists
+        run: |
+          if docker ps -a --format '{{.Names}}' | grep -q '^reactContainer$'; then
+            docker rm -f reactContainer
+          fi
+      - name: Run Docker Container
+        run: docker run -d -p 3000:80 --name reactContainer ankit974/reactjs-app:latest
