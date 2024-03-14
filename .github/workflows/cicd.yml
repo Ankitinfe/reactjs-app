@@ -24,11 +24,11 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Pull image from Docker Hub
-        run: docker pull ankit974/reactjs-app:latest
+        run: sudo docker pull ankit974/reactjs-app:latest
       #- name: Check if Container Exists
         #run: |
           #if docker ps -a --format '{{.Names}}' | grep -q '^reactContainer$'; then
           #  docker rm -f reactContainer
          # fi
       - name: Run Docker Container
-        run: docker run -d -p 80:80 --name reactContainer ankit974/reactjs-app:latest
+        run: sudo docker run -d -p 80:80 --name reactContainer ankit974/reactjs-app:latest
